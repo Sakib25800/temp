@@ -7,15 +7,14 @@ import java.util.*;
  * @version 1.0
  */
 public class Field {
-    // A random number generator for providing random locations.
     private static final Random rand = Randomizer.getRandom();
 
     // The dimensions of the field.
     private final int depth, width;
     // Animals mapped by location.
-    private final Map<Location, Animal> field = new HashMap<>();
+    private final Map<Location, Organism> field = new HashMap<>();
     // The animals.
-    private final List<Animal> animals = new ArrayList<>();
+    private final List<Organism> animals = new ArrayList<>();
 
     /**
      * Represent a field of the given dimensions.
@@ -36,7 +35,7 @@ public class Field {
      * @param anAnimal The animal to be placed.
      * @param location Where to place the animal.
      */
-    public void placeAnimal(Animal anAnimal, Location location) {
+    public void placeAnimal(Organism anAnimal, Location location) {
         assert location != null;
         Object other = field.get(location);
         if (other != null) {
@@ -52,7 +51,7 @@ public class Field {
      * @param location Where in the field.
      * @return The animal at the given location, or null if there is none.
      */
-    public Animal getAnimalAt(Location location) {
+    public Organism getAnimalAt(Location location) {
         return field.get(location);
     }
 
@@ -66,7 +65,7 @@ public class Field {
         List<Location> free = new LinkedList<>();
         List<Location> adjacent = getAdjacentLocations(location);
         for (Location next : adjacent) {
-            Animal anAnimal = field.get(next);
+            Organism anAnimal = field.get(next);
             if (anAnimal == null) {
                 free.add(next);
             } else if (!anAnimal.isAlive()) {
@@ -115,7 +114,7 @@ public class Field {
      */
     public void fieldStats() {
         Map<Class<?>, Integer> counts = new HashMap<>();
-        for (Animal anAnimal : field.values()) {
+        for (Organism anAnimal : field.values()) {
             if (anAnimal.isAlive()) {
                 counts.put(anAnimal.getClass(), counts.getOrDefault(anAnimal.getClass(), 0) + 1);
             }
@@ -141,7 +140,7 @@ public class Field {
     public boolean isViable() {
         boolean predatorFound = false;
         boolean preyFound = false;
-        for (Animal anAnimal : animals) {
+        for (Organism anAnimal : animals) {
             if (anAnimal.isAlive()) {
                 if (anAnimal instanceof Shark || anAnimal instanceof Barracuda) {
                     predatorFound = true;
@@ -159,7 +158,7 @@ public class Field {
     /**
      * Get the list of animals.
      */
-    public List<Animal> getAnimals() {
+    public List<Organism> getAnimals() {
         return animals;
     }
 

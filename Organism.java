@@ -1,13 +1,9 @@
 /**
- * Common elements of foxes and rabbits.
- *
  * @author Sakibul Islam
  * @version 1.0
  */
-public abstract class Animal {
-    // Whether the animal is alive or not.
+public abstract class Organism {
     private boolean alive;
-    // The animal's position.
     private Location location;
 
     /**
@@ -15,7 +11,7 @@ public abstract class Animal {
      * 
      * @param location The animal's location.
      */
-    public Animal(Location location) {
+    public Organism(Location location) {
         this.alive = true;
         this.location = location;
     }

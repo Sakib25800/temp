@@ -8,7 +8,7 @@ import java.util.Random;
  * 
  * @version 1.0
  */
-public class Tuna extends Animal {
+public class Tuna extends Organism {
     private static final int BREEDING_AGE = 10;
     private static final int MAX_AGE = 100;
     private static final double BREEDING_PROBABILITY = 0.15;
@@ -26,45 +26,48 @@ public class Tuna extends Animal {
 
     public void act(Field currentField, Field nextFieldState, boolean isDay) {
         incrementAge();
-        if (isAlive()) {
-            List<Location> freeLocations = nextFieldState.getFreeAdjacentLocations(getLocation());
-            Location nextLocation = null;
-            
-            if (isDay && !freeLocations.isEmpty()) {
-                // Day behavior - normal movement and breeding
-                giveBirth(currentField, nextFieldState, freeLocations);
-                if (!freeLocations.isEmpty()) {
-                    nextLocation = freeLocations.remove(0);
-                }
-            } else if (!isDay) {
-                // Night behavior - reduced movement (schooling)
-                if (!freeLocations.isEmpty() && rand.nextDouble() < 0.3) {
-                    nextLocation = freeLocations.remove(0);
-                }
-                nextLocation = nextLocation == null ? getLocation() : nextLocation;
-            }
+        if (!isAlive()) {
+            return;
+        }
 
-            if (nextLocation != null) {
-                setLocation(nextLocation);
-                nextFieldState.placeAnimal(this, nextLocation);
+        List<Location> freeLocations = nextFieldState.getFreeAdjacentLocations(getLocation());
+        Location nextLocation = null;
+
+        if (isDay && !freeLocations.isEmpty()) {
+            // Day behavior - normal movement and breeding
+            giveBirth(currentField, nextFieldState, freeLocations);
+            if (!freeLocations.isEmpty()) {
+                nextLocation = freeLocations.remove(0);
             }
+        } else if (!isDay) {
+            // Night behavior - reduced movement (schooling)
+            if (!freeLocations.isEmpty() && rand.nextDouble() < 0.3) {
+                nextLocation = freeLocations.remove(0);
+            }
+            nextLocation = nextLocation == null ? getLocation() : nextLocation;
+        }
+
+        if (nextLocation != null) {
+            setLocation(nextLocation);
+            nextFieldState.placeAnimal(this, nextLocation);
         }
     }
 
     private void giveBirth(Field currentField, Field nextFieldState, List<Location> freeLocations) {
         int births = 0;
+
         if (canBreed() && rand.nextDouble() <= BREEDING_PROBABILITY) {
             List<Location> adjacent = currentField.getAdjacentLocations(getLocation());
             for (Location loc : adjacent) {
-                Animal animal = currentField.getAnimalAt(loc);
-                if (animal instanceof Tuna tuna && tuna.isAlive() && 
-                    tuna.isMale() != this.isMale()) {
+                Organism animal = currentField.getAnimalAt(loc);
+                if (animal instanceof Tuna tuna && tuna.isAlive() &&
+                        tuna.isMale() != this.isMale()) {
                     births = rand.nextInt(MAX_LITTER_SIZE) + 1;
                     break;
                 }
             }
         }
-        
+
         for (int b = 0; b < births && !freeLocations.isEmpty(); b++) {
             Location loc = freeLocations.remove(0);
             Tuna young = new Tuna(false, loc);
@@ -74,7 +77,8 @@ public class Tuna extends Animal {
 
     private void incrementAge() {
         age++;
-        if (age > MAX_AGE) setDead();
+        if (age > MAX_AGE)
+            setDead();
     }
 
     private boolean canBreed() {

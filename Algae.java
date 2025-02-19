@@ -1,9 +1,16 @@
 import java.util.List;
 import java.util.Random;
 
-public class Algae extends Animal {
-    // Chance for algae to reproduce.
-    private static final double REPRODUCTION_PROBABILITY = 0.05;
+/**
+ * A model of a an algae - this is the plant challenge task but plants don't
+ * make sense in sea-life.
+ * Algae constantly grow, and reproduce, but never die.
+ * 
+ * @author Sakibul Islam
+ * @version 1.0
+ */
+public class Algae extends Organism {
+    private static final double REPRODUCTION_PROBABILITY = 0.1;
 
     public Algae(Location location) {
         super(location);
@@ -23,6 +30,7 @@ public class Algae extends Animal {
                 nextField.placeAnimal(newAlgae, loc);
             }
         }
+
         // Keep algae in the next field.
         nextField.placeAnimal(this, getLocation());
     }

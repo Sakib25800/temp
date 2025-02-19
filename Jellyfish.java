@@ -7,7 +7,7 @@ import java.util.Random;
  *
  * @version 1.0
  */
-public class Jellyfish extends Animal {
+public class Jellyfish extends Organism {
 
     private static final int BREEDING_AGE = 1;
     private static final int MAX_AGE = 30;
@@ -19,6 +19,7 @@ public class Jellyfish extends Animal {
 
     public Jellyfish(boolean randomAge, Location location) {
         super(location);
+
         if (randomAge) {
             age = rand.nextInt(MAX_AGE);
         } else {
@@ -28,30 +29,31 @@ public class Jellyfish extends Animal {
 
     public void act(Field currentField, Field nextFieldState, boolean isDay) {
         incrementAge();
-        if (isAlive()) {
-            List<Location> freeLocations =
-                nextFieldState.getFreeAdjacentLocations(getLocation());
-            Location nextLocation = null;
+        if (!isAlive()) {
+            return;
+        }
 
-            if (!isDay && !freeLocations.isEmpty()) {
-                // Night behavior - rise to surface (upward movement)
-                List<Location> upwardLocations = freeLocations
+        List<Location> freeLocations = nextFieldState.getFreeAdjacentLocations(getLocation());
+        Location nextLocation = null;
+
+        if (!isDay && !freeLocations.isEmpty()) {
+            // Night behavior - rise to surface (upward movement)
+            List<Location> upwardLocations = freeLocations
                     .stream()
                     .filter(loc -> loc.row() < getLocation().row())
                     .toList();
-                if (!upwardLocations.isEmpty()) {
-                    nextLocation = upwardLocations.get(0);
-                    giveBirth(nextFieldState, freeLocations);
-                }
-            } else if (isDay && !freeLocations.isEmpty()) {
-                // Day behavior - normal movement
-                nextLocation = freeLocations.remove(0);
+            if (!upwardLocations.isEmpty()) {
+                nextLocation = upwardLocations.get(0);
+                giveBirth(nextFieldState, freeLocations);
             }
+        } else if (isDay && !freeLocations.isEmpty()) {
+            // Day behavior - normal movement
+            nextLocation = freeLocations.remove(0);
+        }
 
-            if (nextLocation != null) {
-                setLocation(nextLocation);
-                nextFieldState.placeAnimal(this, nextLocation);
-            }
+        if (nextLocation != null) {
+            setLocation(nextLocation);
+            nextFieldState.placeAnimal(this, nextLocation);
         }
     }
 
@@ -64,6 +66,7 @@ public class Jellyfish extends Animal {
 
     private void giveBirth(Field nextFieldState, List<Location> freeLocations) {
         int births = breed();
+
         if (births > 0) {
             for (int b = 0; b < births && !freeLocations.isEmpty(); b++) {
                 Location loc = freeLocations.remove(0);
@@ -75,11 +78,13 @@ public class Jellyfish extends Animal {
 
     private int breed() {
         int births;
+
         if (canBreed() && rand.nextDouble() <= BREEDING_PROBABILITY) {
             births = rand.nextInt(MAX_LITTER_SIZE) + 1;
         } else {
             births = 0;
         }
+
         return births;
     }
 

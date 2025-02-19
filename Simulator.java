@@ -7,35 +7,20 @@ import java.util.*;
  * @version 1.0
  */
 public class Simulator {
-    // Constants representing configuration information for the simulation.
-    // The default width for the grid.
     private static final int DEFAULT_WIDTH = 120;
-    // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 80;
-    // The probability that a shark will be created in any given grid position.
     private static final double SHARK_CREATION_PROBABILITY = 0.02;
-    // The probability that a barracuda will be created in any given grid position.
     private static final double BARRACUDA_CREATION_PROBABILITY = 0.02;
-    // The probability that a tuna will be created in any given position.
     private static final double TUNA_CREATION_PROBABILITY = 0.08;
-    // The probability that a sardine will be created in any given position.
     private static final double SARDINE_CREATION_PROBABILITY = 0.1;
-    // The probability that a jellyfish will be created in any given position.
     private static final double JELLYFISH_CREATION_PROBABILITY = 0.05;
-    // The probability that algae will be created in any given position.
     private static final double ALGAE_CREATION_PROBABILITY = 0.15;
-    // New constant for disease probability
     private static final double DISEASE_PROBABILITY = 0.05;
 
-    // The current state of the field.
     private Field field;
-    // The current step of the simulation.
     private int step;
-    // A graphical view of the simulation.
     private final SimulatorView view;
-    // Whether it is currently day or night.
     private boolean isDay;
-    // New weather variable and Random instance
     private String weather;
     private final Random rand = Randomizer.getRandom();
 
@@ -100,8 +85,8 @@ public class Simulator {
         updateWeather(); // update weather condition
         Field nextFieldState = new Field(field.getDepth(), field.getWidth());
 
-        List<Animal> animals = field.getAnimals();
-        for (Animal anAnimal : animals) {
+        List<Organism> animals = field.getAnimals();
+        for (Organism anAnimal : animals) {
             // Introduce disease: animal may die due to disease before acting.
             if (anAnimal.isAlive() && rand.nextDouble() < DISEASE_PROBABILITY) {
                 anAnimal.setDead();
@@ -171,7 +156,7 @@ public class Simulator {
     public void reportStats() {
         // Compute population counts
         Map<String, Integer> counts = new HashMap<>();
-        for (Animal a : field.getAnimals()) {
+        for (Organism a : field.getAnimals()) {
             if (a.isAlive()) {
                 String key = a.getClass().getSimpleName();
                 counts.put(key, counts.getOrDefault(key, 0) + 1);
