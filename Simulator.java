@@ -24,6 +24,8 @@ public class Simulator {
     private static final double JELLYFISH_CREATION_PROBABILITY = 0.05;
     // The probability that algae will be created in any given position.
     private static final double ALGAE_CREATION_PROBABILITY = 0.15;
+    // New constant for disease probability
+    private static final double DISEASE_PROBABILITY = 0.05;
 
     // The current state of the field.
     private Field field;
@@ -100,7 +102,14 @@ public class Simulator {
 
         List<Animal> animals = field.getAnimals();
         for (Animal anAnimal : animals) {
-            anAnimal.act(field, nextFieldState, isDay);
+            // Introduce disease: animal may die due to disease before acting.
+            if (anAnimal.isAlive() && rand.nextDouble() < DISEASE_PROBABILITY) {
+                anAnimal.setDead();
+                continue;
+            }
+            if (anAnimal.isAlive()) {
+                anAnimal.act(field, nextFieldState, isDay);
+            }
         }
 
         field = nextFieldState;
