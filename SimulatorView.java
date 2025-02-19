@@ -45,6 +45,7 @@ public class SimulatorView extends JFrame {
         setColor(Tuna.class, Color.yellow);
         setColor(Sardine.class, Color.cyan);
         setColor(Jellyfish.class, Color.magenta);
+        setColor(Algae.class, new Color(0, 128, 0)); // Added algae with dark green color
 
         setTitle("Marine Life Simulation");
         stepLabel = new JLabel(STEP_PREFIX, JLabel.CENTER);

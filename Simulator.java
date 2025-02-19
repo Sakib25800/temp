@@ -22,6 +22,8 @@ public class Simulator {
     private static final double SARDINE_CREATION_PROBABILITY = 0.1;
     // The probability that a jellyfish will be created in any given position.
     private static final double JELLYFISH_CREATION_PROBABILITY = 0.05;
+    // The probability that algae will be created in any given position.
+    private static final double ALGAE_CREATION_PROBABILITY = 0.15;
 
     // The current state of the field.
     private Field field;
@@ -145,6 +147,11 @@ public class Simulator {
                         + TUNA_CREATION_PROBABILITY + SARDINE_CREATION_PROBABILITY + JELLYFISH_CREATION_PROBABILITY) {
                     Jellyfish jellyfish = new Jellyfish(true, location);
                     field.placeAnimal(jellyfish, location);
+                } else if (randDouble <= SHARK_CREATION_PROBABILITY + BARRACUDA_CREATION_PROBABILITY
+                        + TUNA_CREATION_PROBABILITY + SARDINE_CREATION_PROBABILITY + JELLYFISH_CREATION_PROBABILITY
+                        + ALGAE_CREATION_PROBABILITY) {
+                    Algae algae = new Algae(location);
+                    field.placeAnimal(algae, location);
                 }
                 // else leave the location empty.
             }
