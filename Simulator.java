@@ -31,6 +31,9 @@ public class Simulator {
     private final SimulatorView view;
     // Whether it is currently day or night.
     private boolean isDay;
+    // New weather variable and Random instance
+    private String weather;
+    private final Random rand = Randomizer.getRandom();
 
     /**
      * Construct a simulation field with default size.
@@ -56,6 +59,7 @@ public class Simulator {
         field = new Field(depth, width);
         view = new SimulatorView(depth, width);
         isDay = true;
+        weather = "Sunny"; // default weather
 
         reset();
     }
@@ -89,6 +93,7 @@ public class Simulator {
     public void simulateOneStep() {
         step++;
         isDay = !isDay; // Toggle day/night
+        updateWeather(); // update weather condition
         Field nextFieldState = new Field(field.getDepth(), field.getWidth());
 
         List<Animal> animals = field.getAnimals();
@@ -97,6 +102,7 @@ public class Simulator {
         }
 
         field = nextFieldState;
+        // Use the improved logging output
         reportStats();
         view.showStatus(step, field);
     }
@@ -145,11 +151,28 @@ public class Simulator {
         }
     }
 
-    /**
-     * Report on the number of each type of animal in the field.
-     */
+    // Updated logging method that prints a consistent header with all info.
     public void reportStats() {
-        field.fieldStats();
+        // Compute population counts
+        Map<String, Integer> counts = new HashMap<>();
+        for (Animal a : field.getAnimals()) {
+            if (a.isAlive()) {
+                String key = a.getClass().getSimpleName();
+                counts.put(key, counts.getOrDefault(key, 0) + 1);
+            }
+        }
+        // Build a population details string
+        StringBuilder popDetails = new StringBuilder();
+        for (Map.Entry<String, Integer> entry : counts.entrySet()) {
+            popDetails.append(entry.getKey())
+                    .append(": ")
+                    .append(entry.getValue())
+                    .append(" ");
+        }
+        System.out.println("--------------------------------------------------");
+        System.out.println("Step: " + step + " | Weather: " + weather);
+        System.out.println("Population: " + popDetails.toString().trim());
+        System.out.println("--------------------------------------------------");
     }
 
     /**
@@ -163,5 +186,11 @@ public class Simulator {
         } catch (InterruptedException e) {
             // ignore
         }
+    }
+
+    // New method to update weather condition
+    private void updateWeather() {
+        String[] conditions = { "Sunny", "Rainy", "Cloudy", "Windy", "Stormy" };
+        weather = conditions[rand.nextInt(conditions.length)];
     }
 }
