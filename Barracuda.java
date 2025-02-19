@@ -1,5 +1,4 @@
 import java.util.List;
-import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -14,6 +13,7 @@ public class Barracuda extends Organism {
     private static final double BREEDING_PROBABILITY = 0.1;
     private static final int MAX_LITTER_SIZE = 4;
     private static final int SARDINE_FOOD_VALUE = 10;
+    private static final int TUNA_FOOD_VALUE = 15; // new constant for tuna
     private static final Random rand = Randomizer.getRandom();
 
     private int age;
@@ -75,24 +75,28 @@ public class Barracuda extends Organism {
         }
     }
 
+    // Modify the findFood method to prioritize Tuna over Sardine
     private Location findFood(Field field) {
         List<Location> adjacent = field.getAdjacentLocations(getLocation());
-        Iterator<Location> it = adjacent.iterator();
-        Location foodLocation = null;
-
-        while (foodLocation == null && it.hasNext()) {
-            Location loc = it.next();
+        // First, search for Tuna
+        for (Location loc : adjacent) {
             Organism animal = field.getAnimalAt(loc);
-            if (animal instanceof Sardine sardine) {
-                if (sardine.isAlive()) {
-                    sardine.setDead();
-                    foodLevel = SARDINE_FOOD_VALUE;
-                    foodLocation = loc;
-                }
+            if (animal instanceof Tuna tuna && tuna.isAlive()) {
+                tuna.setDead();
+                foodLevel = TUNA_FOOD_VALUE;
+                return loc;
             }
         }
-
-        return foodLocation;
+        // If no Tuna found, look for Sardine
+        for (Location loc : adjacent) {
+            Organism animal = field.getAnimalAt(loc);
+            if (animal instanceof Sardine sardine && sardine.isAlive()) {
+                sardine.setDead();
+                foodLevel = SARDINE_FOOD_VALUE;
+                return loc;
+            }
+        }
+        return null;
     }
 
     private void giveBirth(Field nextFieldState, List<Location> freeLocations) {
