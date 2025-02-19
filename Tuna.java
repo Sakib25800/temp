@@ -4,7 +4,6 @@ import java.util.Random;
 /**
  * A simple model of a tuna.
  * Tuna age, move, breed, and die.
- * Schools at night, requires gender matching for breeding.
  * 
  * @version 1.0
  */
@@ -40,7 +39,7 @@ public class Tuna extends Organism {
                 nextLocation = freeLocations.remove(0);
             }
         } else if (!isDay) {
-            // Night behavior - reduced movement (schooling)
+            // Night behavior - reduced movement
             if (!freeLocations.isEmpty() && rand.nextDouble() < 0.3) {
                 nextLocation = freeLocations.remove(0);
             }
